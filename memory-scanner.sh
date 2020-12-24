@@ -2,7 +2,7 @@
 
 echo "MEMORY SCANNER!"
 THEN=$(date +%s)
-RESULTS_FILE=$(pwd)/results.yaml
+RESULTS_FILE=$(pwd)/results/results.yaml
 RESOURCE_TYPES_FILE=$(pwd)/k8s_resource_types.txt
 SEPARATOR="---"
 
