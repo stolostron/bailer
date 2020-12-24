@@ -72,9 +72,42 @@ def readFileAsCommandInfoList(file_path):
         _command_list.append(_command_info)
     return _command_list
 
+# lists contain straight up strings
+def diffTheLists(list_one, list_two):
+
+    results = {
+        "both": [],
+        "added": [],
+        "removed": []
+    }
+
+    # gotta check both directions
+    for n in list_one:
+        if n in list_two:
+            results["both"].append(n)
+        else:
+            results["removed"].append(n)
+    
+    for n in list_two:
+        if n not in list_one:
+            results["added"].append(n)
+
+    return results
+
 def spotTheDifference(command_info_list_one,  command_info_list_two):
+    results = {
+        "both": [],
+        "added": [],
+        "removed": []
+    }
     print (len(command_info_list_one))
     print (len(command_info_list_two))
+    list_one_commands = list(map(CommandInfo.getCommand, command_info_list_one))
+    list_two_commands = list(map(CommandInfo.getCommand, command_info_list_two))
+    command_diffs  = diffTheLists(list_one_commands, list_two_commands)
+    print ("both: {}".format(str(len(command_diffs["both"]))))
+    print ("removed: {}".format(str(len(command_diffs["removed"]))))
+    print ("added: {}".format(str(len(command_diffs["added"]))))
 
 def main():
     if not envVarsReady():
