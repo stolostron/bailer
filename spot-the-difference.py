@@ -3,6 +3,7 @@ import os
  
 COMMAND_SEPARATOR="---\n"
 COMMAND_PREFIX=">"
+SKIP_COLUMN_KEYS=["age"]
 
 def envVarsReady():
     if not "FIRST_FILE" in os.environ:
@@ -26,7 +27,7 @@ class CommandInfo:
         if not _full_command_as_array:
             self.command = _just_command_string.replace(COMMAND_PREFIX, "").strip() # without "> "
             self.column_keys = []
-            self.rows = []
+            self.resource_rows = []
             return
         _just_column_keys = _full_command_as_array.pop(0)
 
@@ -37,7 +38,10 @@ class CommandInfo:
 
         self.command = _just_command_string.replace(COMMAND_PREFIX, "").strip() # without "> "
         self.column_keys = splitCommandRow(_just_column_keys)
-        self.rows = _rows
+        self.resource_rows = _rows
+    
+    def getResource(self):
+        return self.command.split()[2]
 
     def getCommand(self):
         return self.command
@@ -45,8 +49,8 @@ class CommandInfo:
     def getColumnKeys(self):
         return self.column_keys
     
-    def getRows(self):
-        return self.rows
+    def getResourceRows(self):
+        return self.resource_rows
 
 
 """
@@ -54,8 +58,8 @@ class CommandInfo:
     If no resource of that kind found, _full_command_as_array will be len == 1
 """
 
-def readFileAsCommandInfoList(file_path):
-    _file_as_dict = dict()
+def readFileAsCommandInfoDict(file_path):
+    _command_info_dict = dict()
     try:
         _file = open(file_path, "r")
         _file_as_string = _file.read()
@@ -69,8 +73,8 @@ def readFileAsCommandInfoList(file_path):
         if not _chunk.strip():
             continue
         _command_info = CommandInfo(_chunk.strip())
-        _command_list.append(_command_info)
-    return _command_list
+        _command_info_dict[_command_info.getResource()] = _command_info
+    return _command_info_dict
 
 # lists contain straight up strings
 def diffTheLists(list_one, list_two):
@@ -94,20 +98,32 @@ def diffTheLists(list_one, list_two):
 
     return results
 
-def spotTheDifference(command_info_list_one,  command_info_list_two):
+def getListOfStringsFromResourceRows(command_info):
+    print("Make sure to ignore some of the columns, like age")
+    print(SKIP_COLUMN_KEYS)
+
+
+def spotTheDifference(command_info_dict_one,  command_info_dict_two):
     results = {
-        "both": [],
-        "added": [],
-        "removed": []
+        "both": dict(),
+        "added": dict(),
+        "removed": dict()
     }
-    print (len(command_info_list_one))
-    print (len(command_info_list_two))
-    list_one_commands = list(map(CommandInfo.getCommand, command_info_list_one))
-    list_two_commands = list(map(CommandInfo.getCommand, command_info_list_two))
-    command_diffs  = diffTheLists(list_one_commands, list_two_commands)
-    print ("both: {}".format(str(len(command_diffs["both"]))))
-    print ("removed: {}".format(str(len(command_diffs["removed"]))))
-    print ("added: {}".format(str(len(command_diffs["added"]))))
+    _resource_list_one=command_info_dict_one.keys()
+    _resource_list_two=command_info_dict_two.keys()
+
+    resource_diffs  = diffTheLists(_resource_list_one, _resource_list_two)
+    for a in resource_diffs["added"]:
+        results["added"][a] = command_info_dict_two[a]
+    for r in resource_diffs["removed"]:
+        results["removed"][r] = command_info_dict_one[r]
+    for b in resource_diffs["both"]:
+        print ("Both: {}".format(b))
+        _resource_rows_from_dict_one = command_info_dict_one[b].getResourceRows()
+        _resource_rows_from_dict_two = command_info_dict_two[b].getResourceRows()
+       
+    print("one: {} two: {}".format(str(len(_resource_list_one)), str(len(_resource_rows_from_dict_two))))
+    return results
 
 def main():
     if not envVarsReady():
@@ -117,10 +133,10 @@ def main():
     _first_file_path = os.environ["FIRST_FILE"]
     _second_file_path = os.environ["SECOND_FILE"]
 
-    _first_command_info_list = readFileAsCommandInfoList(_first_file_path)
-    _second_command_info_list = readFileAsCommandInfoList(_second_file_path)
+    _first_command_info_list = readFileAsCommandInfoDict(_first_file_path)
+    _second_command_info_list = readFileAsCommandInfoDict(_second_file_path)
 
-    spotTheDifference(_first_command_info_list, _second_command_info_list)
+    _res = spotTheDifference(_first_command_info_list, _second_command_info_list)
    
 
 

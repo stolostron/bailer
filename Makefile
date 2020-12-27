@@ -1,5 +1,5 @@
-scan:
+cluster-scan:
 	./memory-scanner.sh
 
-diff:
+cluster-diff:
 	python3 ./spot-the-difference.py
