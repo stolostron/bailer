@@ -135,11 +135,10 @@ def spotTheDifference(command_info_dict_one,  command_info_dict_two):
 
     _resource_diffs  = diffTheLists(_resource_list_one, _resource_list_two)
     for a in _resource_diffs["added"]:
-        results["added"][a] = command_info_dict_two[a].getResourceRowsAsStrings()
-        # print ("ALL ADDED: {} {}".format(a, str(len(command_info_dict_two[a].getResourceRowsAsStrings()))))
+        if len(command_info_dict_two[a].getResourceRows()) > 0: # else, recorded with CRD addition
+            results["added"][a] = command_info_dict_two[a].getResourceRowsAsStrings()
     for r in _resource_diffs["removed"]:
         results["removed"][r] = command_info_dict_one[r].getResourceRowsAsStrings()
-        # print ("ALL REMOVED: {} {}".format(r, str(len(command_info_dict_one[r].getResourceRowsAsStrings()))))
     for b in _resource_diffs["both"]:
         _resource_rows_strings_from_dict_one = command_info_dict_one[b].getResourceRowsAsStrings()
         _resource_rows_strings_from_dict_two = command_info_dict_two[b].getResourceRowsAsStrings()

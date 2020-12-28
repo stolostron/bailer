@@ -10,11 +10,12 @@ rm -rf $RESULTS_FILE 2>/dev/null
 touch $RESULTS_FILE
 
 echo $SEPARATOR >> $RESULTS_FILE
-COMMAND="oc get crd"
+COMMAND="oc get crd" # change to oc get CUSTOMRESOURCEDEFINITIONS
 echo "> $COMMAND" >> $RESULTS_FILE
 $COMMAND >> $RESULTS_FILE
 
 ALL_CRDS=$(oc get crd | tr -s " " | cut -d " " -f 1)
+# remove first line that is NAME ...
 for CRD in $ALL_CRDS
 do
     echo $SEPARATOR >> $RESULTS_FILE
