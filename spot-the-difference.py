@@ -14,6 +14,7 @@ def envVarsReady():
     if not "SECOND_FILE" in os.environ:
         print("ERROR: MUST EXPORT SECOND FILE PATH AS `SECOND_FILE`")
         return False
+    # NW add env vars for result files
     return True
 
 # this will save spaces in command row where spaces need saved
