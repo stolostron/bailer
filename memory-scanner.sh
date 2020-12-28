@@ -10,14 +10,17 @@ rm -rf $RESULTS_FILE 2>/dev/null
 touch $RESULTS_FILE
 
 echo $SEPARATOR >> $RESULTS_FILE
-COMMAND="oc get crd" # NW change to oc get CUSTOMRESOURCEDEFINITIONS
+COMMAND="oc get customresourcedefinitions" 
 echo "> $COMMAND" >> $RESULTS_FILE
 $COMMAND >> $RESULTS_FILE
 
 ALL_CRDS=$(oc get crd | tr -s " " | cut -d " " -f 1)
-# NW remove first line that is NAME ...
+
 for CRD in $ALL_CRDS
 do
+    if [[ $CRD  == "NAME" ]]; then
+        continue
+    fi
     echo $SEPARATOR >> $RESULTS_FILE
     COMMAND="oc get $CRD --all-namespaces"
     echo "> $COMMAND" >> $RESULTS_FILE 
@@ -25,6 +28,7 @@ do
 done
 
 #https://kubernetes.io/docs/reference/kubectl/overview/#resource-types
+# not capturing k8s events (that's just my choice, we can add it back to the k8s resource list)
 ALL_RESOURCE_TYPES=$(cat $RESOURCE_TYPES_FILE)
 for RT in $ALL_RESOURCE_TYPES
 do

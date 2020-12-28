@@ -2,7 +2,6 @@ bindings
 componentstatuses
 configmaps
 endpoints
-events
 limitranges
 namespaces
 nodes
@@ -35,8 +34,6 @@ jobs
 certificatesigningrequests
 leases
 endpointslices
-events
-ingresses
 flowschemas
 prioritylevelconfigurations
 ingressclasses
