@@ -2,8 +2,10 @@ import sys
 import os
  
 COMMAND_SEPARATOR="---\n"
+NEWLINE="\n"
 COMMAND_PREFIX=">"
 SKIP_COLUMN_KEYS=["age"]
+STRING_JOINER="   "
 
 def envVarsReady():
     if not "FIRST_FILE" in os.environ:
@@ -22,12 +24,13 @@ def splitCommandRow(row):
 
 class CommandInfo:
     def __init__(self, command_chunk):
-        _full_command_as_array = command_chunk.split("\n")
+        _full_command_as_array = command_chunk.split(NEWLINE)
         _just_command_string = _full_command_as_array.pop(0)
         if not _full_command_as_array:
             self.command = _just_command_string.replace(COMMAND_PREFIX, "").strip() # without "> "
             self.column_keys = []
             self.resource_rows = []
+            self.resource_rows_as_strings = []
             return
         _just_column_keys = _full_command_as_array.pop(0)
 
@@ -39,7 +42,23 @@ class CommandInfo:
         self.command = _just_command_string.replace(COMMAND_PREFIX, "").strip() # without "> "
         self.column_keys = splitCommandRow(_just_column_keys)
         self.resource_rows = _rows
+        self.resource_rows_as_strings = self.makeResourceRowsIntoListOfStrings()
     
+    def makeResourceRowsIntoListOfStrings(self):
+        _column_keys = self.getColumnKeys()
+        _resource_rows = self.getResourceRows()
+        _resource_rows_as_strings = [] 
+        for r in _resource_rows:
+            _row_string = ""
+            for _ind, _val in enumerate(r):
+                _curr_column_key = _column_keys[_ind]
+                if _curr_column_key.lower() in map(str.lower, SKIP_COLUMN_KEYS):
+                    continue
+                else:
+                    _row_string += (STRING_JOINER + _val)
+            _resource_rows_as_strings.append(_row_string.strip())
+        return _resource_rows_as_strings
+
     def getResource(self):
         return self.command.split()[2]
 
@@ -51,7 +70,9 @@ class CommandInfo:
     
     def getResourceRows(self):
         return self.resource_rows
-
+    
+    def getResourceRowsAsStrings(self):
+        return self.resource_rows_as_strings
 
 """
     command_chunk is the ENTIRE string, from "> oc get ..." to the last newline of the last result
@@ -76,6 +97,11 @@ def readFileAsCommandInfoDict(file_path):
         _command_info_dict[_command_info.getResource()] = _command_info
     return _command_info_dict
 
+def writeStringToFile(file_path, file_as_string):
+    _file = open(file_path, "w")
+    _file.write(file_as_string)
+    _file.close()
+
 # lists contain straight up strings
 def diffTheLists(list_one, list_two):
 
@@ -98,11 +124,6 @@ def diffTheLists(list_one, list_two):
 
     return results
 
-def getListOfStringsFromResourceRows(command_info):
-    print("Make sure to ignore some of the columns, like age")
-    print(SKIP_COLUMN_KEYS)
-
-
 def spotTheDifference(command_info_dict_one,  command_info_dict_two):
     results = {
         "both": dict(),
@@ -112,18 +133,41 @@ def spotTheDifference(command_info_dict_one,  command_info_dict_two):
     _resource_list_one=command_info_dict_one.keys()
     _resource_list_two=command_info_dict_two.keys()
 
-    resource_diffs  = diffTheLists(_resource_list_one, _resource_list_two)
-    for a in resource_diffs["added"]:
-        results["added"][a] = command_info_dict_two[a]
-    for r in resource_diffs["removed"]:
-        results["removed"][r] = command_info_dict_one[r]
-    for b in resource_diffs["both"]:
-        print ("Both: {}".format(b))
-        _resource_rows_from_dict_one = command_info_dict_one[b].getResourceRows()
-        _resource_rows_from_dict_two = command_info_dict_two[b].getResourceRows()
-       
-    print("one: {} two: {}".format(str(len(_resource_list_one)), str(len(_resource_rows_from_dict_two))))
+    _resource_diffs  = diffTheLists(_resource_list_one, _resource_list_two)
+    for a in _resource_diffs["added"]:
+        results["added"][a] = command_info_dict_two[a].getResourceRowsAsStrings()
+        # print ("ALL ADDED: {} {}".format(a, str(len(command_info_dict_two[a].getResourceRowsAsStrings()))))
+    for r in _resource_diffs["removed"]:
+        results["removed"][r] = command_info_dict_one[r].getResourceRowsAsStrings()
+        # print ("ALL REMOVED: {} {}".format(r, str(len(command_info_dict_one[r].getResourceRowsAsStrings()))))
+    for b in _resource_diffs["both"]:
+        _resource_rows_strings_from_dict_one = command_info_dict_one[b].getResourceRowsAsStrings()
+        _resource_rows_strings_from_dict_two = command_info_dict_two[b].getResourceRowsAsStrings()
+        _row_diffs = diffTheLists(_resource_rows_strings_from_dict_one, _resource_rows_strings_from_dict_two)
+        for a in _row_diffs["added"]:
+            if b not in results["added"]:
+                results["added"][b] = []
+            results["added"][b].append(a)
+        for r in _row_diffs["removed"]:
+            if b not in results["removed"]:
+                results["removed"][b] = []
+            results["removed"][b].append(r)
+        for bo in _row_diffs["both"]:
+            if b not in results["both"]:
+                results["both"][b] = []
+            results["both"][b].append(bo)
+            
     return results
+
+def makeStringFromResults(res_dict):
+    _res_string = ""
+    for k in res_dict.keys():
+        _res_string += (COMMAND_SEPARATOR) 
+        _res_string += (k.upper() + NEWLINE + NEWLINE)
+        for r in res_dict[k]:
+            _res_string += ( r + NEWLINE )
+        _res_string += NEWLINE
+    return _res_string
 
 def main():
     if not envVarsReady():
@@ -137,6 +181,14 @@ def main():
     _second_command_info_list = readFileAsCommandInfoDict(_second_file_path)
 
     _res = spotTheDifference(_first_command_info_list, _second_command_info_list)
+
+    _res_both = makeStringFromResults(_res["both"])
+    _res_added = makeStringFromResults(_res["added"])
+    _res_removed = makeStringFromResults(_res["removed"])
+
+    writeStringToFile("./both-results", _res_both)
+    writeStringToFile("./added-results", _res_added)
+    writeStringToFile("./removed-results", _res_removed)
    
 
 
