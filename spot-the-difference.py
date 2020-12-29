@@ -163,7 +163,7 @@ def makeStringFromResults(res_dict):
     _res_string = ""
     for k in res_dict.keys():
         _res_string += (COMMAND_SEPARATOR) 
-        _res_string += (k.upper() + NEWLINE + NEWLINE)
+        _res_string += (k + NEWLINE + NEWLINE)
         for r in res_dict[k]:
             _res_string += ( r + NEWLINE )
         _res_string += NEWLINE
