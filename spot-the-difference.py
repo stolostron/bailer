@@ -4,7 +4,7 @@ import os
 COMMAND_SEPARATOR="---\n"
 NEWLINE="\n"
 COMMAND_PREFIX=">"
-SKIP_COLUMN_KEYS=["age"]
+SKIP_COLUMN_KEYS=["age", "since", "age", "menu", "ready", "available"]
 STRING_JOINER="   "
 
 def envVarsReady():
@@ -173,7 +173,6 @@ def main():
     if not envVarsReady():
         print ("BAD BAD")
         return
-    print ("GOOD TO GO")
     _first_file_path = os.environ["FIRST_FILE"]
     _second_file_path = os.environ["SECOND_FILE"]
 
