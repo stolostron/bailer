@@ -1,8 +1,34 @@
 import json
 import sys
 import os
+import csv
+import argparse
+
 
 NEWLINE="\n"
+
+
+
+def BFS(top_dict, looking_for_key):
+    # queue
+    dict_q = [top_dict] # list of dictionaries
+    # magic math
+    for d in dict_q:
+        dict_keys = d.keys()
+#        print(dict_keys)
+        for k in dict_keys:
+#            print(k)
+            if k == looking_for_key:
+                return d[k] 
+            if isinstance(d[k], dict):
+                dict_q.append(d[k]) 
+
+def check_ignore(ignore_dict, element_dictionary):
+    for key in ignore_dict.keys():
+        if BFS(element_dictionary, key) in ignore_dict[key]:
+            return True
+    return False
+
 
 def read_file_as_dict(file_path):
     _resource_info_dict = dict()
@@ -72,12 +98,13 @@ def spotTheDifference(json_dict_one,  json_dict_two):
             results["both"][b].append(bo)
     return results
 
-def makeStringFromResults(res_dict):
+def makeStringFromResults(res_dict, ignore_dict):
     _res_string = ""
     for k in res_dict.keys():
         _res_string += (k + NEWLINE + NEWLINE)
         for r in res_dict[k]:
-            _res_string += ( json.dumps(r) + NEWLINE )
+            if not check_ignore(ignore_dict, r):
+                _res_string += ( json.dumps(r) + NEWLINE )
         _res_string += NEWLINE
     return _res_string 
 def writeStringToFile(file_path, file_as_string):
@@ -86,18 +113,32 @@ def writeStringToFile(file_path, file_as_string):
     _file.close()
 
 def main():
-    _first_file_path = os.environ["FIRST_FILE"]    
-    _second_file_path = os.environ["SECOND_FILE"]
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-f", "--first_file", required=True)
+    parser.add_argument("-s", "--second_file", required=True)
+    parser.add_argument("-c", "--ignore_file", required=False)
+    parser.add_argument("-o", "--output_tag", required=True)
+    args = vars(parser.parse_args())
+    _first_file_path = args['first_file']
+    _second_file_path = args['second_file']
+    _ignore_file_path = args['ignore_file']
+    _output_tag = args['output_tag']
     _first_resource_dict_list = read_file_as_dict(_first_file_path)
     _second_resource_dict_list = read_file_as_dict(_second_file_path)
     _results = spotTheDifference(_first_resource_dict_list, _second_resource_dict_list)
-    _res_both = makeStringFromResults(_results["both"])
-    _res_added = makeStringFromResults(_results["added"])
-    _res_removed = makeStringFromResults(_results["removed"])
+    if _ignore_file_path:
+        with open(_ignore_file_path) as f:
+            _ignore_dictionary=json.load(f)
+    else:
+        _ignore_dictionary = {}
+    _res_both = makeStringFromResults(_results["both"], _ignore_dictionary)
+    _res_added = makeStringFromResults(_results["added"], _ignore_dictionary)
+    _res_removed = makeStringFromResults(_results["removed"], _ignore_dictionary)
 
-    writeStringToFile("./both-results-cam", _res_both)
-    writeStringToFile("./added-results-cam", _res_added)
-    writeStringToFile("./removed-results-cam", _res_removed)
+    writeStringToFile("./both-results-"+_output_tag, _res_both)
+    writeStringToFile("./added-results-"+_output_tag, _res_added)
+    writeStringToFile("./removed-results-"+_output_tag, _res_removed)
 
 
 main()
