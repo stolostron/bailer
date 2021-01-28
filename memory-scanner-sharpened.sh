@@ -5,7 +5,6 @@ THEN=$(date +%s)
 TAG=$1
 RESULTS_FILE=$(pwd)/results/results-$TAG.txt
 
-
 rm -rf $RESULTS_FILE 2>/dev/null
 touch $RESULTS_FILE
 
@@ -13,7 +12,7 @@ ALL_RESOURCES=$(oc api-resources | tr -s " " | awk '{if (NF==5) {print $1"."$3} 
 
 for RESOURCE in $ALL_RESOURCES
 do
-    if [[ $RESOURCE  == "NAME" ]]; then
+    if [[ $RESOURCE  == "NAME.APIGROUP" ]]; then
         continue
     fi
     COMMAND="oc get $RESOURCE --all-namespaces -o json | jq '-c .items'"
