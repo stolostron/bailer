@@ -36,7 +36,6 @@ def read_file_as_dict(file_path):
     _read_file = open(_details_file, 'r') 
     while True:
         _resource_type=_read_file.readline().strip()
-        print(_resource_type)
         if not _resource_type:
             break
         _resource_details_json=_read_file.readline()
@@ -98,18 +97,15 @@ def spotTheDifference(json_dict_one,  json_dict_two):
             results["both"][b].append(bo)
     return results
 
-def makeStringFromResults(res_dict, ignore_dict):
-    _res_string = ""
+def removeIgnoredItems(res_dict, ignore_dict):
+    copy_dict=res_dict
     for k in res_dict.keys():
-        _res_string += (k + NEWLINE + NEWLINE)
-        for r in res_dict[k]:
-            if not check_ignore(ignore_dict, r):
-                _res_string += ( json.dumps(r) + NEWLINE )
-        _res_string += NEWLINE
-    return _res_string 
-def writeStringToFile(file_path, file_as_string):
+        res_dict[k][:] = [item for item in res_dict[k] if not check_ignore(ignore_dict, item)]                       
+    return res_dict
+
+def writeJSON(file_path, res_dict):
     _file = open(file_path, "w")
-    _file.write(file_as_string)
+    _file.write(json.dumps(res_dict, indent=2))
     _file.close()
 
 def main():
@@ -132,13 +128,11 @@ def main():
             _ignore_dictionary=json.load(f)
     else:
         _ignore_dictionary = {}
-    _res_both = makeStringFromResults(_results["both"], _ignore_dictionary)
-    _res_added = makeStringFromResults(_results["added"], _ignore_dictionary)
-    _res_removed = makeStringFromResults(_results["removed"], _ignore_dictionary)
-
-    writeStringToFile("./both-results-"+_output_tag, _res_both)
-    writeStringToFile("./added-results-"+_output_tag, _res_added)
-    writeStringToFile("./removed-results-"+_output_tag, _res_removed)
-
+    _res_both = removeIgnoredItems(_results["both"], _ignore_dictionary)
+    _res_added = removeIgnoredItems(_results["added"], _ignore_dictionary)
+    _res_removed = removeIgnoredItems(_results["removed"], _ignore_dictionary)
+    writeJSON("./results/both-results-"+_output_tag, _res_both)
+    writeJSON("./results/added-results-"+_output_tag, _res_added)
+    writeJSON("./results/removed-results-"+_output_tag, _res_removed)
 
 main()
