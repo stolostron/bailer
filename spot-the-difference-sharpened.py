@@ -3,11 +3,12 @@ import sys
 import os
 import csv
 import argparse
+import copy
 
 
 NEWLINE="\n"
 
-
+SKIP_COLUMN_KEYS=["age", "since", "lastheartbeattime", "lasttransitiontime", "time", "resourceVersion", "generation"]
 
 def BFS(top_dict, looking_for_key):
     # queue
@@ -15,9 +16,7 @@ def BFS(top_dict, looking_for_key):
     # magic math
     for d in dict_q:
         dict_keys = d.keys()
-#        print(dict_keys)
         for k in dict_keys:
-#            print(k)
             if k == looking_for_key:
                 return d[k] 
             if isinstance(d[k], dict):
@@ -28,7 +27,6 @@ def check_ignore(ignore_dict, element_dictionary):
         if BFS(element_dictionary, key) in ignore_dict[key]:
             return True
     return False
-
 
 def read_file_as_dict(file_path):
     _resource_info_dict = dict()
@@ -45,6 +43,38 @@ def read_file_as_dict(file_path):
     _read_file.close ()
 
     return _resource_info_dict
+
+def pruneList(l):
+    for i in range(len(l)):
+        item = l[i]
+        if type(item) is list:
+            l[i] = pruneList(item)
+        elif type(item) is dict:
+            l[i] = pruneDict(item)
+        # else skip
+    return l
+
+def pruneDict(d):
+    dict_copy = copy.deepcopy(d)
+    dict_keys = dict_copy.keys()
+    for k in dict_keys:
+        if k.lower() in map(str.lower, SKIP_COLUMN_KEYS):
+            del d[k]
+            continue
+        value_from_key = d[k]
+        if type(value_from_key) is list:
+            d[k] = pruneList(value_from_key)
+        elif type(value_from_key) is dict:
+            d[k] = pruneDict(value_from_key)
+        # else skip
+    return d
+
+def pruneDictOfLists(dict_of_lists):
+    dict_keys = dict_of_lists.keys()
+    for k in dict_keys:
+        l_o_t = dict_of_lists[k]
+        dict_of_lists[k] = pruneList(l_o_t)
+    return dict_of_lists
 
 def diffTheLists(list_one, list_two):
 
@@ -98,6 +128,12 @@ def spotTheDifference(json_dict_one,  json_dict_two):
     return results
 
 def removeIgnoredItems(res_dict, ignore_dict):
+    # add support for removing kind
+    if "kind" in ignore_dict.keys():
+        remove_kinds = ignore_dict["kind"]
+        for kind in remove_kinds:
+            res_dict.pop(kind, None)
+
     copy_dict=res_dict
     for k in res_dict.keys():
         res_dict[k][:] = [item for item in res_dict[k] if not check_ignore(ignore_dict, item)]                       
@@ -122,7 +158,13 @@ def main():
     _output_tag = args['output_tag']
     _first_resource_dict_list = read_file_as_dict(_first_file_path)
     _second_resource_dict_list = read_file_as_dict(_second_file_path)
-    _results = spotTheDifference(_first_resource_dict_list, _second_resource_dict_list)
+    
+    # _results = spotTheDifference(_first_resource_dict_list, _second_resource_dict_list)
+
+    _pruned_first_resource_dict_list = pruneDictOfLists(_first_resource_dict_list)
+    _pruned_second_resource_dict_list = pruneDictOfLists(_second_resource_dict_list)
+    _results = spotTheDifference(_pruned_first_resource_dict_list, _pruned_second_resource_dict_list)
+
     if _ignore_file_path:
         with open(_ignore_file_path) as f:
             _ignore_dictionary=json.load(f)
