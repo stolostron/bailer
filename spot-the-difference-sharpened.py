@@ -134,11 +134,18 @@ def removeIgnoredItems(res_dict, ignore_dict):
         for kind in remove_kinds:
             res_dict.pop(kind, None)
 
-    copy_dict=res_dict
     for k in res_dict.keys():
         res_dict[k][:] = [item for item in res_dict[k] if not check_ignore(ignore_dict, item)]                       
     return res_dict
 
+def removeEmptyResults(res_dict):
+    copy_dict=copy.deepcopy(res_dict)
+    dict_keys = copy_dict.keys()
+    for k in dict_keys:
+        if type(copy_dict[k]) is list and not copy_dict[k]: #empty list
+            del res_dict[k]
+    return res_dict
+    
 def writeJSON(file_path, res_dict):
     _file = open(file_path, "w")
     _file.write(json.dumps(res_dict, indent=2))
@@ -170,9 +177,15 @@ def main():
             _ignore_dictionary=json.load(f)
     else:
         _ignore_dictionary = {}
+
     _res_both = removeIgnoredItems(_results["both"], _ignore_dictionary)
     _res_added = removeIgnoredItems(_results["added"], _ignore_dictionary)
     _res_removed = removeIgnoredItems(_results["removed"], _ignore_dictionary)
+
+    _res_both = removeEmptyResults(_res_both)
+    _res_added = removeEmptyResults(_res_added)
+    _res_removed = removeEmptyResults(_res_removed)
+
     writeJSON("./results/both-results-"+_output_tag, _res_both)
     writeJSON("./results/added-results-"+_output_tag, _res_added)
     writeJSON("./results/removed-results-"+_output_tag, _res_removed)
