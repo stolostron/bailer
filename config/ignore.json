@@ -57,6 +57,10 @@
     "kind": "securitycontextconstraints.security.openshift.io"
   },
   {
+    "name": "openshift-cluster-monitoring-view",
+    "kind": "clusterroles.rbac.authorization.k8s.io"
+  },
+  {
     "name": "openshift-cluster-monitoring-admin",
     "kind": "clusterroles.rbac.authorization.k8s.io"
   },
