@@ -1,9 +1,166 @@
- 
 [
   {
     "name": "something",
     "kind": "something",
     "namespace": "something"
+  },
+  {
+    "name": "csr-4qfvv",
+    "kind": "certificatesigningrequests.certificates.k8s.io"
+  },
+  {
+    "name": "csr-b247z",
+    "kind": "certificatesigningrequests.certificates.k8s.io"
+  },
+  {
+    "name": "csr-b87qt",
+    "kind": "certificatesigningrequests.certificates.k8s.io"
+  },
+  {
+    "name": "csr-bg92r",
+    "kind": "certificatesigningrequests.certificates.k8s.io"
+  },
+  {
+    "name": "csr-cj26b",
+    "kind": "certificatesigningrequests.certificates.k8s.io"
+  },
+  {
+    "name": "csr-kpw54",
+    "kind": "certificatesigningrequests.certificates.k8s.io"
+  },
+  {
+    "name": "csr-krmkg",
+    "kind": "certificatesigningrequests.certificates.k8s.io"
+  },
+  {
+    "name": "csr-njngw",
+    "kind": "certificatesigningrequests.certificates.k8s.io"
+  },
+  {
+    "name": "csr-nnb7g",
+    "kind": "certificatesigningrequests.certificates.k8s.io"
+  },
+  {
+    "name": "csr-rg9pw",
+    "kind": "certificatesigningrequests.certificates.k8s.io"
+  },
+  {
+    "name": "csr-rkt6h",
+    "kind": "certificatesigningrequests.certificates.k8s.io"
+  },
+  {
+    "name": "csr-swfwd",
+    "kind": "certificatesigningrequests.certificates.k8s.io"
+  },
+  {
+    "name": "node-exporter",
+    "kind": "securitycontextconstraints.security.openshift.io"
+  },
+  {
+    "name": "openshift-cluster-monitoring-admin",
+    "kind": "clusterroles.rbac.authorization.k8s.io"
+  },
+  {
+    "name": "openshift-cluster-monitoring-edit",
+    "kind": "clusterroles.rbac.authorization.k8s.io"
+  },
+  {
+    "name": "alertmanager-main",
+    "kind": "clusterrolebindings.rbac.authorization.k8s.io"
+  },
+  {
+    "name": "prometheus-adapter",
+    "kind": "clusterrolebindings.rbac.authorization.k8s.io"
+  },
+  {
+    "name": "prometheus-adapter-view",
+    "kind": "clusterrolebindings.rbac.authorization.k8s.io"
+  },
+  {
+    "name": "prometheus-k8s",
+    "kind": "clusterrolebindings.rbac.authorization.k8s.io"
+  },
+  {
+    "name": "prometheus-operator",
+    "kind": "clusterrolebindings.rbac.authorization.k8s.io"
+  },
+  {
+    "name": "resource-metrics:system:auth-delegator",
+    "kind": "clusterrolebindings.rbac.authorization.k8s.io"
+  },
+  {
+    "name": "telemeter-client",
+    "kind": "clusterrolebindings.rbac.authorization.k8s.io"
+  },
+  {
+    "name": "telemeter-client-view",
+    "kind": "clusterrolebindings.rbac.authorization.k8s.io"
+  },
+  {
+    "name": "thanos-querier",
+    "kind": "clusterrolebindings.rbac.authorization.k8s.io"
+  },
+  {
+    "name": "openshift-state-metrics",
+    "kind": "clusterrolebindings.rbac.authorization.k8s.io"
+  },
+  {
+    "name": "node-exporter",
+    "kind": "clusterrolebindings.rbac.authorization.k8s.io"
+  },
+  {
+    "name": "kube-state-metrics",
+    "kind": "clusterrolebindings.rbac.authorization.k8s.io"
+  },
+  {
+    "name": "grafana",
+    "kind": "clusterrolebindings.rbac.authorization.k8s.io"
+  },
+  {
+    "name": "multus.openshift.io",
+    "kind": "validatingwebhookconfigurations.admissionregistration.k8s.io"
+  },
+  {
+    "name": "clusternetworks.network.openshift.io",
+    "kind": "customresourcedefinitions.apiextensions.k8s.io"
+  },
+  {
+    "name": "egressnetworkpolicies.network.openshift.io",
+    "kind": "customresourcedefinitions.apiextensions.k8s.io"
+  },
+  {
+    "name": "hostsubnets.network.openshift.io",
+    "kind": "customresourcedefinitions.apiextensions.k8s.io"
+  },
+  {
+    "name": "ippools.whereabouts.cni.cncf.io",
+    "kind": "customresourcedefinitions.apiextensions.k8s.io"
+  },
+  {
+    "name": "netnamespaces.network.openshift.io",
+    "kind": "customresourcedefinitions.apiextensions.k8s.io"
+  },
+  {
+    "name": "network-attachment-definitions.k8s.cni.cncf.io",
+    "kind": "customresourcedefinitions.apiextensions.k8s.io"
+  },
+  {
+    "kind": "clusterrolebindings.authorization.openshift.io"
+  },
+  {
+    "kind": "clusterroles.authorization.openshift.io"
+  },
+  {
+    "kind": "clusteroperators.config.openshift.io"
+  },
+  {
+    "kind": "clusterversions.config.openshift.io"
+  },
+  {
+    "kind": "nodes.metrics.k8s.io"
+  },
+  {
+    "kind": "nodes"
   },
   {
     "namespace": "kube-node-lease"
