@@ -5,54 +5,6 @@
     "namespace": "something"
   },
   {
-    "name": "csr-4qfvv",
-    "kind": "certificatesigningrequests.certificates.k8s.io"
-  },
-  {
-    "name": "csr-b247z",
-    "kind": "certificatesigningrequests.certificates.k8s.io"
-  },
-  {
-    "name": "csr-b87qt",
-    "kind": "certificatesigningrequests.certificates.k8s.io"
-  },
-  {
-    "name": "csr-bg92r",
-    "kind": "certificatesigningrequests.certificates.k8s.io"
-  },
-  {
-    "name": "csr-cj26b",
-    "kind": "certificatesigningrequests.certificates.k8s.io"
-  },
-  {
-    "name": "csr-kpw54",
-    "kind": "certificatesigningrequests.certificates.k8s.io"
-  },
-  {
-    "name": "csr-krmkg",
-    "kind": "certificatesigningrequests.certificates.k8s.io"
-  },
-  {
-    "name": "csr-njngw",
-    "kind": "certificatesigningrequests.certificates.k8s.io"
-  },
-  {
-    "name": "csr-nnb7g",
-    "kind": "certificatesigningrequests.certificates.k8s.io"
-  },
-  {
-    "name": "csr-rg9pw",
-    "kind": "certificatesigningrequests.certificates.k8s.io"
-  },
-  {
-    "name": "csr-rkt6h",
-    "kind": "certificatesigningrequests.certificates.k8s.io"
-  },
-  {
-    "name": "csr-swfwd",
-    "kind": "certificatesigningrequests.certificates.k8s.io"
-  },
-  {
     "name": "node-exporter",
     "kind": "securitycontextconstraints.security.openshift.io"
   },
