@@ -1,3 +1,5 @@
+FROM THE FORK!
+
 The spot the different process requires 3 steps to complete the comparison. Run "memory-scanner" on a cluster in the initial state. 
 Then after making changes to the cluster run "memory-scanner" again.
 Finally, run "spot-the-difference" to complete the comparison.
