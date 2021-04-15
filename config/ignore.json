@@ -119,6 +119,9 @@
     "kind": "nodes"
   },
   {
+    "kind": "events"
+  },
+  {
     "namespace": "kube-node-lease"
   },
   {
