@@ -2,43 +2,23 @@
 
 echo "MEMORY SCANNER!"
 THEN=$(date +%s)
-RESULTS_FILE=$(pwd)/results/results.yaml
-RESOURCE_TYPES_FILE=$(pwd)/k8s_resource_types.txt
-SEPARATOR="---"
+TAG=$1
+RESULTS_FILE=$(pwd)/results/results-$TAG.txt
 
 rm -rf $RESULTS_FILE 2>/dev/null
 touch $RESULTS_FILE
 
-echo $SEPARATOR >> $RESULTS_FILE
-COMMAND="oc get customresourcedefinitions" 
-echo "> $COMMAND" >> $RESULTS_FILE
-$COMMAND >> $RESULTS_FILE
+ALL_RESOURCES=$(oc api-resources | tr -s " " | awk '{if (NF==5) {print $1"."$3} else if ($2 ~ /\./) {print $1"."$2} else {print $1}}')
 
-ALL_CRDS=$(oc get crd | tr -s " " | cut -d " " -f 1)
-
-for CRD in $ALL_CRDS
+for RESOURCE in $ALL_RESOURCES
 do
-    if [[ $CRD  == "NAME" ]]; then
+    if [[ $RESOURCE  == "NAME.APIGROUP" ]]; then
         continue
     fi
-    echo $SEPARATOR >> $RESULTS_FILE
-    COMMAND="oc get $CRD --all-namespaces"
-    echo "> $COMMAND" >> $RESULTS_FILE 
-    $COMMAND >> $RESULTS_FILE
+    COMMAND="oc get $RESOURCE --all-namespaces -o json | jq '-c .items'"
+    echo $RESOURCE >> $RESULTS_FILE 
+    oc get $RESOURCE --all-namespaces -o json | jq -c .items >> $RESULTS_FILE
 done
-
-#https://kubernetes.io/docs/reference/kubectl/overview/#resource-types
-# not capturing k8s events (that's just my choice, we can add it back to the k8s resource list)
-ALL_RESOURCE_TYPES=$(cat $RESOURCE_TYPES_FILE)
-for RT in $ALL_RESOURCE_TYPES
-do
-    echo $SEPARATOR >> $RESULTS_FILE
-    COMMAND="oc get $RT --all-namespaces"
-    echo "> $COMMAND" >> $RESULTS_FILE
-    $COMMAND >> $RESULTS_FILE
-done
-
-# SHOULD REMOVE AGE COL FROM ALL CRDS
 
 NOW=$(date +%s)
 SECONDS=$(expr $NOW - $THEN)
