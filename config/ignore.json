@@ -3,5 +3,11 @@
     "name": "something",
     "kind": "something",
     "namespace": "something"
+  },
+  {
+    "kind": "events"
+  },
+  {
+    "kind": "events.events.k8s.io"
   }
 ]

@@ -18,13 +18,8 @@ def BFS(top_dict, looking_for_key):
             if k == looking_for_key:
                 return d[k] 
             if isinstance(d[k], dict):
-                dict_q.append(d[k]) 
-
-def check_ignore(ignore_dict, element_dictionary):
-    for key in ignore_dict.keys():
-        if BFS(element_dictionary, key) in ignore_dict[key]:
-            return True
-    return False
+                dict_q.append(d[k])
+    return ""
 
 def find_key_with_value (key, value, element_dictionary):
     return BFS(element_dictionary, key) == value
@@ -53,40 +48,21 @@ def read_scan_file_as_dict(file_path):
         if _resource_details_dict:
             _resource_info_dict[_resource_type]=_resource_details_dict
     _read_file.close ()
-
     return _resource_info_dict
 
-def pruneList(l, skip_column_keys):
-    for i in range(len(l)):
-        item = l[i]
-        if type(item) is list:
-            l[i] = pruneList(item, skip_column_keys)
-        elif type(item) is dict:
-            l[i] = pruneDict(item, skip_column_keys)
-        # else skip
-    return l
-
-def pruneDict(d, skip_column_keys):
-    dict_copy = copy.deepcopy(d)
-    dict_keys = dict_copy.keys()
-    for k in dict_keys:
-        if k.lower() in map(str.lower, skip_column_keys):
-            del d[k]
-            continue
-        value_from_key = d[k]
-        if type(value_from_key) is list:
-            d[k] = pruneList(value_from_key, skip_column_keys)
-        elif type(value_from_key) is dict:
-            d[k] = pruneDict(value_from_key, skip_column_keys)
-        # else skip
-    return d
-
-def pruneDictOfLists(dict_of_lists, skip_column_keys):
-    dict_keys = dict_of_lists.keys()
-    for k in dict_keys:
-        l_o_t = dict_of_lists[k]
-        dict_of_lists[k] = pruneList(l_o_t, skip_column_keys)
-    return dict_of_lists
+def simplify_dict_list(dict_of_lists):
+    _attributes_we_care_about = ["kind", "name", "namespace"]
+    _dict_keys=dict_of_lists.keys()
+    _simplified_dict_list = dict()
+    for k in _dict_keys:
+        _simplified_dict_list[k] = []
+        _resource_list = dict_of_lists[k]
+        for r in _resource_list: # r is a dict for a particular resource
+            _simplified_resource = dict()
+            for a in _attributes_we_care_about:
+                _simplified_resource[a] = BFS(r, a)
+            _simplified_dict_list[k].append(_simplified_resource)
+    return _simplified_dict_list
 
 def diffTheLists(list_one, list_two):
 
@@ -207,13 +183,11 @@ def main():
 
     _first_resource_dict_list = read_scan_file_as_dict(_first_file_path)
     _second_resource_dict_list = read_scan_file_as_dict(_second_file_path)
+
+    _first_resource_dict_list_simplified = simplify_dict_list(_first_resource_dict_list)
+    _second_resource_dict_list_simplified = simplify_dict_list(_second_resource_dict_list)
     
-    # _results = spotTheDifference(_first_resource_dict_list, _second_resource_dict_list)
-    _skip_column_keys = read_json_file(get_pruner_list_file_path())
-    _pruned_first_resource_dict_list = pruneDictOfLists(_first_resource_dict_list, _skip_column_keys)
-    _pruned_second_resource_dict_list = pruneDictOfLists(_second_resource_dict_list, _skip_column_keys)
-    
-    _results = spotTheDifference(_pruned_first_resource_dict_list, _pruned_second_resource_dict_list)
+    _results = spotTheDifference(_first_resource_dict_list_simplified, _second_resource_dict_list_simplified)
 
     _res_both = _results["both"]
     _res_added = _results["added"]
