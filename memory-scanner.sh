@@ -8,10 +8,11 @@ RESULTS_FILE=$(pwd)/results/results-$TAG.txt
 rm -rf $RESULTS_FILE 2>/dev/null
 touch $RESULTS_FILE
 
-ALL_RESOURCES=$(oc api-resources | tr -s " " | awk '{if (NF==5) {print $1"."$3} else if ($2 ~ /\./) {print $1"."$2} else {print $1}}')
+ALL_RESOURCES=$(oc api-resources --verbs=list | tr -s " " | awk '{if (NF==5) {print $1"."$3} else if ($2 ~ /\./) {print $1"."$2} else {print $1}}')
 
 for RESOURCE in $ALL_RESOURCES
 do
+    echo $RESOURCE
     if [[ $RESOURCE  == "NAME.APIGROUP" ]]; then
         continue
     fi
