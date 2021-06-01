@@ -3,7 +3,7 @@
 echo "MEMORY SCANNER!"
 THEN=$(date +%s)
 TAG=$1
-RESULTS_FILE=$(pwd)/results/results-$TAG.txt
+RESULTS_FILE=$(pwd)/results/scan-$TAG.jsonl
 
 rm -rf $RESULTS_FILE 2>/dev/null
 touch $RESULTS_FILE
@@ -16,9 +16,16 @@ do
     if [[ $RESOURCE  == "NAME.APIGROUP" ]]; then
         continue
     fi
-    COMMAND="oc get $RESOURCE --all-namespaces -o json | jq '-c .items'"
-    echo $RESOURCE >> $RESULTS_FILE 
-    oc get $RESOURCE --all-namespaces -o json | jq -c .items >> $RESULTS_FILE
+
+    # echo $RESOURCE >> $RESULTS_FILE 
+    OC_GET_JSON=$(oc get $RESOURCE --all-namespaces -o json | jq -c .items )
+
+    if [ -z "${OC_GET_JSON}" ]; then
+        OC_GET_JSON="[]"
+    fi
+
+    echo "{ \"$RESOURCE\" : $OC_GET_JSON }" | jq -rc >> $RESULTS_FILE
+
 done
 
 NOW=$(date +%s)

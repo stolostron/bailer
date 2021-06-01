@@ -40,13 +40,16 @@ def read_scan_file_as_dict(file_path):
     _details_file=file_path
     _read_file = open(_details_file, 'r') 
     while True:
-        _resource_type=_read_file.readline().strip()
-        if not _resource_type:
+        # _resource_type=_read_file.readline().strip()
+        # if not _resource_type:
+        #     break
+        _resource_details_json=_read_file.readline().strip()
+        if not _resource_details_json:
             break
-        _resource_details_json=_read_file.readline()
         _resource_details_dict=json.loads(_resource_details_json)
         if _resource_details_dict:
-            _resource_info_dict[_resource_type]=_resource_details_dict
+            _resource_info_dict.update(_resource_details_dict)
+            # _resource_info_dict[_resource_type]=_resource_details_dict
     _read_file.close ()
     return _resource_info_dict
 
@@ -203,8 +206,8 @@ def main():
     _res_added = removeEmptyResults(_results["added"])
     _res_removed = removeEmptyResults(_results["removed"])
 
-    writeJSON("./results/both-results-"+_output_tag, _res_both)
-    writeJSON("./results/added-results-"+_output_tag, _res_added)
-    writeJSON("./results/removed-results-"+_output_tag, _res_removed)
+    writeJSON("./results/both-results-"+_output_tag+".json", _res_both)
+    writeJSON("./results/added-results-"+_output_tag+".json", _res_added)
+    writeJSON("./results/removed-results-"+_output_tag+".json", _res_removed)
 
 main()
