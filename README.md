@@ -15,3 +15,6 @@ To run "spot-the-difference" use the below docker command replacing variables as
 ```
 docker run -v <results output location>:/results < diff <initial file location> <secondary file location> <unique reference tag>
 ```
+
+In the above, we are using volumes to inject locally stored directories into our container. The <results output location> contents will match those of `/results`
+When designating the file locations for the diff run, it is necessary to use their location on the container following this injection
