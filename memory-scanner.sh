@@ -77,7 +77,7 @@ do
         OC_GET_JSON="[]"
     fi
 
-    echo "{ \"$RESOURCE\" : $OC_GET_JSON }" | jq -rc >> $RESULTS_FILE
+    echo "{ \"$RESOURCE\" : $OC_GET_JSON }" | jq -rc '.' >> $RESULTS_FILE
     NOW=$(date +%s)
     SECONDS=$(expr $NOW - $RESOURCE_START)
     echo "$SECONDS seconds"

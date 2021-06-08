@@ -1,3 +1,6 @@
+docker-build:
+	docker build . -t bailer:0.0.1
+
 cluster-scan:
 	./memory-scanner.sh ${TAG}
 
