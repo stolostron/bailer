@@ -1,0 +1,1 @@
+docker run -v /Users/nweather/git/bailer/container-results:/results bailer:0.0.1 scan kubeadmin 'b8kak-c59wf-J9AsZ-aickG' 'https://api.installer-pool-sbzqx.dev01.red-chesterfield.com:6443' 'scan-01-operator-clean'
