@@ -1,0 +1,78 @@
+[
+  {
+    "name": "something",
+    "kind": "something",
+    "namespace": "something"
+  },
+  {
+    "kind": "namespaces",
+    "name": "hive"
+  },
+  {
+    "kind": "projects.project.openshift.io",
+    "name": "hive"
+  },
+  {
+    "namespace": "hive"
+  },
+  {
+    "namespace": "aGl2ZQ=="
+  },
+  {
+    "name": "multicloud-operators-remote-subscription-leader.open-cluster-management.io",
+    "kind": "configmaps",
+    "namespace": "kube-system"
+  },
+  {
+    "kind": "configmaps",
+    "namespace": "open-cluster-management"
+  },
+  {
+    "kind": "persistentvolumeclaims",
+    "namespace": "open-cluster-management"
+  },
+  {
+    "kind": "persistentvolumes",
+    "namespace": "open-cluster-management"
+  },
+  {
+    "kind": "clusterrolebindings.rbac.authorization.k8s.io",
+    "name": "open-cluster-management:subscription-admin"
+  },
+  {
+    "kind": "clusterrolebindings.rbac.authorization.k8s.io",
+    "name": "klusterlet"
+  },
+  {
+    "kind": "clusterrolebindings.authorization.openshift.io",
+    "name": "klusterlet"
+  },
+  {
+    "kind": "clusterrolebindings.authorization.openshift.io",
+    "name": "open-cluster-management:subscription-admin"
+  },
+  {
+    "kind": "clusterroles.rbac.authorization.k8s.io",
+    "name": "klusterlet"
+  },
+  {
+    "kind": "clusterroles.rbac.authorization.k8s.io",
+    "name": "open-cluster-management:klusterlet-admin-aggregate-clusterrole"
+  },
+  {
+    "kind": "clusterroles.rbac.authorization.k8s.io",
+    "name": "open-cluster-management:subscription-admin"
+  },
+  {
+    "kind": "clusterroles.authorization.openshift.io",
+    "name": "klusterlet"
+  },
+  {
+    "kind": "clusterroles.authorization.openshift.io",
+    "name": "open-cluster-management:klusterlet-admin-aggregate-clusterrole"
+  },
+  {
+    "kind": "clusterroles.authorization.openshift.io",
+    "name": "open-cluster-management:subscription-admin"
+  }
+]
