@@ -1,7 +1,5 @@
 import json
-import sys
 import os
-import csv
 import argparse
 import copy
 
@@ -24,11 +22,11 @@ def BFS(top_dict, looking_for_key):
 def find_key_with_value (key, value, element_dictionary):
     return BFS(element_dictionary, key) == value
 
-def get_pruner_list_file_path():
-    return os.path.join(os.getcwd(), "config", "prune.json")
-
 def get_ignore_list_file_path():
     return os.path.join(os.getcwd(), "config", "ignore.json")
+
+def get_acm_leaks_list_file_path():
+    return os.path.join(os.getcwd(), "config", "acm-leaks.json")
 
 def read_json_file(file_path):
     if file_path:
@@ -197,17 +195,20 @@ def main():
     _res_removed = _results["removed"]
 
     _ignore_list = read_json_file(get_ignore_list_file_path())
+    _acm_leaks_list = read_json_file(get_acm_leaks_list_file_path())
 
-    _res_both = removeIgnoredItems(_res_both, _ignore_list)
-    _res_added = removeIgnoredItems(_res_added, _ignore_list)
-    _res_removed = removeIgnoredItems(_res_removed, _ignore_list)
+    _all_ignores_list = _ignore_list + _acm_leaks_list
+
+    _res_both = removeIgnoredItems(_res_both, _all_ignores_list)
+    _res_added = removeIgnoredItems(_res_added, _all_ignores_list)
+    _res_removed = removeIgnoredItems(_res_removed, _all_ignores_list)
 
     _res_both = removeEmptyResults(_results["both"])
     _res_added = removeEmptyResults(_results["added"])
     _res_removed = removeEmptyResults(_results["removed"])
 
-    writeJSON("./results/both-results-"+_output_tag+".json", _res_both)
-    writeJSON("./results/added-results-"+_output_tag+".json", _res_added)
-    writeJSON("./results/removed-results-"+_output_tag+".json", _res_removed)
+    # writeJSON("./results/both-results-"+_output_tag+".json", _res_both)
+    # writeJSON("./results/removed-results-"+_output_tag+".json", _res_removed)
+    writeJSON("./results/leaks-"+_output_tag+".json", _res_added)
 
 main()

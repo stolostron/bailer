@@ -9,5 +9,20 @@
   },
   {
     "kind": "events.events.k8s.io"
+  },
+  {
+    "kind": "certificatesigningrequests.certificates.k8s.io"
+  },
+  {
+    "kind": "leases.coordination.k8s.io"
+  },
+  {
+    "kind": "oauthaccesstokens.oauth.openshift.io"
+  },
+  {
+    "kind": "useroauthaccesstokens.oauth.openshift.io"
+  },
+  {
+    "namespace": "openshift-marketplace"
   }
 ]
