@@ -1,9 +1,12 @@
 approvers:
-- nathanweatherly
 - cameronmwall
-- JakobGray
-- zkayyali812
+- jakobgray
 - joeg-pro
-
+- nathanweatherly
+- zkayyali812
 reviewers:
-- mdelder
+- cameronmwall
+- jakobgray
+- joeg-pro
+- nathanweatherly
+- zkayyali812
