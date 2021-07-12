@@ -10,6 +10,8 @@ This process requires the following steps:
 (3) Run "scan" on the cluster to record the secondary state.
 (4) Run "diff" to compare the cluster's inital and secondary state.
 
+
+
 ## `scan`
 
 To run `scan`, export the following environment variables (substituting the correct values for your use case) ...
