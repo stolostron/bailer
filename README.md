@@ -1,6 +1,5 @@
 # Bailer
 
-
 Bailer records and compares a cluster at different states to detect leaks.
 
 This process requires the following steps:
