@@ -24,5 +24,27 @@
   },
   {
     "namespace": "openshift-marketplace"
+  },
+  {
+    "kind": "installplans.operators.coreos.com"
+  },
+  {
+    "kind": "clusterrolebindings.authorization.openshift.io",
+    "name": "edit"
+  },
+  {
+    "kind": "clusterrolebindings.authorization.openshift.io",
+    "name": "admin"
+  },
+  {
+    "kind": "clusterrolebindings.rbac.authorization.k8s.io",
+    "name": "edit"
+  },
+  {
+    "kind": "clusterrolebindings.rbac.authorization.k8s.io",
+    "name": "admin"
+  },  
+  {
+    "kind": "pods.metrics.k8s.io"
   }
 ]
