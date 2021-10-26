@@ -52,7 +52,7 @@ def read_scan_file_as_dict(file_path):
     return _resource_info_dict
 
 def simplify_dict_list(dict_of_lists):
-    _attributes_we_care_about = ["kind", "name", "namespace"]
+    _attributes_we_care_about = ["kind", "name", "namespace", "pod-template-hash"]
     _dict_keys=dict_of_lists.keys()
     _simplified_dict_list = dict()
     for k in _dict_keys:
@@ -65,6 +65,22 @@ def simplify_dict_list(dict_of_lists):
             _simplified_dict_list[k].append(_simplified_resource)
     return _simplified_dict_list
 
+def fix_name (dict_of_lists):
+    _short_name_dict = dict()
+    _dict_keys=dict_of_lists.keys()
+    for k in _dict_keys:
+        _short_name_dict[k] = []
+        _resource_list = dict_of_lists[k]
+        for r in _resource_list: # r is a dict for a particular resource
+            _short_name_resource = dict()
+            _short_name_resource["kind"] = r["kind"]
+            if r["pod-template-hash"] != "":
+                _short_name_resource["name"] = r["name"].split(r["pod-template-hash"])[0]
+            else:
+                _short_name_resource["name"] = r["name"]
+            _short_name_resource["namespace"] = r["namespace"]
+            _short_name_dict[k].append(_short_name_resource)
+    return _short_name_dict
 def diffTheLists(list_one, list_two):
 
     results = {
@@ -187,8 +203,11 @@ def main():
 
     _first_resource_dict_list_simplified = simplify_dict_list(_first_resource_dict_list)
     _second_resource_dict_list_simplified = simplify_dict_list(_second_resource_dict_list)
+
+    _first_resource_dict_list_namefixed = fix_name(_first_resource_dict_list_simplified)
+    _second_resource_dict_list_namefixed = fix_name(_second_resource_dict_list_simplified)
     
-    _results = spotTheDifference(_first_resource_dict_list_simplified, _second_resource_dict_list_simplified)
+    _results = spotTheDifference(_first_resource_dict_list_namefixed, _second_resource_dict_list_namefixed)
 
     _res_both = _results["both"]
     _res_added = _results["added"]
