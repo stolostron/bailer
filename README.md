@@ -69,7 +69,7 @@ export DIFF_TAG="june-2-001-scan-1-to-5"
 
 ```bash
 
-docker run -v $SCAN_DIR_PATH:/results $IMAGE_REF diff results/$INIT_FILE_NAME results/$SECOND_FILE_NAME $DIFF_TAG
+docker run -v $SCAN_DIR_PATH:/results $IMAGE_REF diff /results/$INIT_FILE_NAME /results/$SECOND_FILE_NAME $DIFF_TAG
 
 ```
 
