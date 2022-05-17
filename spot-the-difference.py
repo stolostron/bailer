@@ -235,8 +235,11 @@ def main():
     _res_removed = removeEmptyResults(_results["removed"])
 
     typeCount, totalCount = countTotals(_res_added)
-    print(typeCount)
-    print(totalCount)
+    with open('./results/count.txt', 'w') as f:
+        f.write('Total Leak Count: '+str(totalCount))
+        f.write('\n')
+        f.write('Leaked Resource Kinds: '+str(typeCount))
+        f.write('\n')
 
     # writeJSON("./results/both-results-"+_output_tag+".json", _res_both)
     # writeJSON("./results/removed-results-"+_output_tag+".json", _res_removed)
