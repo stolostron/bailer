@@ -187,6 +187,14 @@ def writeJSON(file_path, res_dict):
     _file.write(json.dumps(res_dict, indent=2))
     _file.close()
 
+def countTotals(res_dict):
+    typeCount = 0
+    totalCount = 0
+    for x in res_dict: 
+        typeCount += 1
+        totalCount += len(res_dict[x])
+    return typeCount, totalCount
+
 def main():
 
     parser = argparse.ArgumentParser()
@@ -225,6 +233,13 @@ def main():
     _res_both = removeEmptyResults(_results["both"])
     _res_added = removeEmptyResults(_results["added"])
     _res_removed = removeEmptyResults(_results["removed"])
+
+    typeCount, totalCount = countTotals(_res_added)
+    with open('./results/count.txt', 'w') as f:
+        f.write('Total Leak Count: '+str(totalCount))
+        f.write('\n')
+        f.write('Leaked Resource Kinds: '+str(typeCount))
+        f.write('\n')
 
     # writeJSON("./results/both-results-"+_output_tag+".json", _res_both)
     # writeJSON("./results/removed-results-"+_output_tag+".json", _res_removed)
