@@ -74,3 +74,4 @@ docker run -v $SCAN_DIR_PATH:/results $IMAGE_REF diff /results/$INIT_FILE_NAME /
 ```
 
 The diff files will be written into `$SCAN_DIR_PATH`.
+
